@@ -14,10 +14,19 @@ namespace Games
     {
 
         [OperationContract]
-        string GetData(int value);
+        string GetGames();
 
         [OperationContract]
-        CompositeType GetDataUsingDataContract(CompositeType composite);
+        IList<Games> GetAllGames();
+
+        [OperationContract]
+        int AddGame(string Name, string ReleaseDate, string Platform);
+
+        [OperationContract]
+        string ReadGame();
+
+
+
 
         // TODO: Add your service operations here
     }
@@ -25,23 +34,11 @@ namespace Games
 
     // Use a data contract as illustrated in the sample below to add composite types to service operations.
     [DataContract]
-    public class CompositeType
+    public class Games
     {
-        bool boolValue = true;
-        string stringValue = "Hello ";
-
-        [DataMember]
-        public bool BoolValue
-        {
-            get { return boolValue; }
-            set { boolValue = value; }
-        }
-
-        [DataMember]
-        public string StringValue
-        {
-            get { return stringValue; }
-            set { stringValue = value; }
-        }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string ReleaseDate { get; set; }
+        public string Platform { get; set; }
     }
 }

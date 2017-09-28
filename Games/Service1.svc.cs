@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
@@ -12,22 +13,42 @@ namespace Games
     // NOTE: In order to launch WCF Test Client for testing this service, please select Service1.svc or Service1.svc.cs at the Solution Explorer and start debugging.
     public class Service1 : IService1
     {
-        public string GetData(int value)
+
+       
+
+    private const string ConnectionString =
+            "Server = tcp:mwp-server.database.windows.net,1433;Initial Catalog = mwp - db; Persist Security Info=False;User ID =Michael; Password=Secret1234; MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout = 30;";
+
+       
+
+
+        public string GetGames()
         {
-            return string.Format("You entered: {0}", value);
+            throw new NotImplementedException();
         }
 
-        public CompositeType GetDataUsingDataContract(CompositeType composite)
+        public int AddGame(string Name, string ReleaseDate, string Platform)
         {
-            if (composite == null)
+            const string InsertGame =
+                "insert into games (Name, ReleaseDate, Platform), values (@Name, @ReleaseDate, @Platform )";
+            using (SqlConnection databaseConnection = new SqlConnection(ConnectionString)) 
             {
-                throw new ArgumentNullException("composite");
+                databaseConnection.Open();
+                using (SqlCommand insertCommand = new SqlCommand(InsertGame, databaseConnection))
+                {
+                    insertCommand.Parameters.AddWithValue("@Name", Name);
+                    insertCommand.Parameters.AddWithValue("@ReleaseDate", ReleaseDate);
+                    insertCommand.Parameters.AddWithValue("@Platform", Platform);
+
+                    int rowsAffected = insertCommand.ExecuteNonQuery();
+                    return rowsAffected;
+                }
             }
-            if (composite.BoolValue)
-            {
-                composite.StringValue += "Suffix";
-            }
-            return composite;
+        }
+
+        public string ReadGame()
+        {
+            throw new NotImplementedException();
         }
     }
 }
