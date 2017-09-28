@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -19,13 +20,45 @@ namespace Games
     private const string ConnectionString =
             "Server = tcp:mwp-server.database.windows.net,1433;Initial Catalog = mwp - db; Persist Security Info=False;User ID =Michael; Password=Secret1234; MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout = 30;";
 
-       
-
-
-        public string GetGames()
+        private static Games ReadGame(IDataRecord reader)
         {
-            throw new NotImplementedException();
+            int id = reader.GetInt32(0);
+            string name = reader.GetString(1);
+            string releaseDate = reader.GetString(2);
+            string platform = reader.GetString(3);
+            Games game = new Games
+            {
+                Id = id,
+                Name = name,
+                ReleaseDate = releaseDate,
+                Platform = platform
+            };
+            return game;
         }
+
+            public IList<Games> GetAllGames()
+        {
+            const string selectAllGames = "select * from games order by ReleaseDate";
+            using (SqlConnection databaseConnection = new SqlConnection(ConnectionString))
+            {
+                databaseConnection.Open();
+                using (SqlCommand selectCommand = new SqlCommand(selectAllGames, databaseConnection))
+                {
+                    using (SqlDataReader reader = selectCommand.ExecuteReader())
+                    {
+                        IList<Games> gameList = new List<Games>();
+                        while (reader.Read())
+                        {
+                            Games game = ReadGame(reader);
+                            gameList.Add(game);
+                        }
+                        return gameList;
+                    }
+                }
+            }
+        }
+
+
 
         public int AddGame(string Name, string ReleaseDate, string Platform)
         {
@@ -46,9 +79,6 @@ namespace Games
             }
         }
 
-        public string ReadGame()
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }

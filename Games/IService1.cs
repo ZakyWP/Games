@@ -13,20 +13,12 @@ namespace Games
     public interface IService1
     {
 
-        [OperationContract]
-        string GetGames();
 
         [OperationContract]
         IList<Games> GetAllGames();
 
         [OperationContract]
         int AddGame(string Name, string ReleaseDate, string Platform);
-
-        [OperationContract]
-        string ReadGame();
-
-
-
 
         // TODO: Add your service operations here
     }
